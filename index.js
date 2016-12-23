@@ -94,6 +94,7 @@ HttpSecuritySystemAccessory.prototype = {
 					callback(error);
 				} else {
 					this.log('SetState function succeeded!');
+					this.securityService.setCharacteristic(Characteristic.SecuritySystemCurrentState, state);
 					callback(error, response, state);
 				}
 			}.bind(this));
@@ -133,17 +134,17 @@ HttpSecuritySystemAccessory.prototype = {
 	},
 
 	getServices: function() {
-		var securityService = new Service.SecuritySystem(this.name);
+		this.securityService = new Service.SecuritySystem(this.name);
 
-		securityService
+		this.securityService
 			.getCharacteristic(Characteristic.SecuritySystemCurrentState)
 			.on('get', this.getCurrentState.bind(this));
 
-		securityService
+		this.securityService
 			.getCharacteristic(Characteristic.SecuritySystemTargetState)
 			.on('get', this.getTargetState.bind(this))
 			.on('set', this.setTargetState.bind(this));
 
-		return [securityService];
+		return [this.securityService];
 	}
 };
